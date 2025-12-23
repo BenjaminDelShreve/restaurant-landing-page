@@ -55,6 +55,15 @@ export function Menu() {
     setPressedBurger(null)
   }
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault()
+  }
+
+  const handleTouchStart = (e: React.TouchEvent, burgerName: string) => {
+    e.preventDefault()
+    handlePointerDown(burgerName)
+  }
+
   return (
     <section id="menu" className="py-24 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -71,6 +80,7 @@ export function Menu() {
                 onPointerDown={() => handlePointerDown(burger.name)}
                 onPointerUp={handlePointerUp}
                 onPointerCancel={handlePointerCancel}
+                onContextMenu={handleContextMenu}
               >
                 <div className="p-4">
                   <div className="flex justify-between items-start mb-2">
@@ -95,12 +105,14 @@ export function Menu() {
               <Card
                 key={burger.name}
                 className="overflow-hidden cursor-pointer transition-transform duration-200 active:scale-[0.98] select-none"
+                style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
                 onPointerDown={() => handlePointerDown(burger.name)}
                 onPointerUp={handlePointerUp}
                 onPointerCancel={handlePointerCancel}
-                onTouchStart={() => handlePointerDown(burger.name)}
+                onTouchStart={(e) => handleTouchStart(e, burger.name)}
                 onTouchEnd={handlePointerUp}
                 onTouchCancel={handlePointerCancel}
+                onContextMenu={handleContextMenu}
               >
                 <div className="p-4">
                   <div className="flex justify-between items-start mb-2">
@@ -122,10 +134,12 @@ export function Menu() {
         {pressedBurger && (
           <div
             className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 touch-none"
+            style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
             onPointerUp={handlePointerUp}
             onPointerCancel={handlePointerCancel}
             onTouchEnd={handlePointerUp}
             onTouchCancel={handlePointerCancel}
+            onContextMenu={handleContextMenu}
           >
             <div className="relative w-full max-w-2xl aspect-video rounded-lg overflow-hidden pointer-events-none">
               <Image
@@ -134,6 +148,8 @@ export function Menu() {
                 fill
                 className="object-cover"
                 priority
+                draggable={false}
+                onContextMenu={handleContextMenu}
               />
             </div>
             <p className="absolute bottom-8 text-white/80 text-sm">Release to close</p>
